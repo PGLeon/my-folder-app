@@ -1,3 +1,9 @@
-<p>
-  home works!
-</p>
+  <div id = "login">
+      <h3 *ngFor = "let item of classroom">
+        {{item.status}}
+        {{item.name}}
+      </h3>
+      <button (click)="checkout()">Log out</button> 
+  </div>
+
+

@@ -1,3 +1,25 @@
-<p>
-  blog works!
-</p>
+<div *ngFor="let journal of journals">
+    <h1 id="journal">{{journal.title}}</h1>
+  
+    <p id="journal1">{{journal.content}}</p>
+  </div>
+  
+  <div id="centering">
+  
+    <form [formGroup] = "form" (ngSubmit)="onSubmit()">
+        <label>
+          Title:
+        <input type="text" formControlName="title" placeholder="Enter Journal Title">
+        </label>
+        <label>
+         Journal:
+        <input type="text" formControlName="content" placeholder="Enter Journal Here">
+        </label>
+
+        <button type="Submit">Submit</button>
+          </form>
+  
+  </div>
+
+  
+  
