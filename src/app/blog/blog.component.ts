@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup} from '@angular/forms';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { _getViewData } from '@angular/core/src/render3/instructions';
-
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-blog',
@@ -9,31 +10,55 @@ import { _getViewData } from '@angular/core/src/render3/instructions';
   styleUrls: ['./blog.component.css']
 })
 export class BlogComponent implements OnInit {
+  public user;
   public form: FormGroup;
-  constructor(public fb: FormBuilder){}
+  constructor(public fb: FormBuilder, public http: HttpClient, public router: Router) { }
+  public data = [];
 
-  public journals = [
-    {
-      title: '',
-      content: '',
-  },
-  {
-    title: '',
-    content: '',
-  }
-  ]
+
 
   ngOnInit() {
+    this.getData();
     this.form = this.fb.group({
-      title :['', Validators.required],
-      content :['', Validators.required]
+      title: ['', Validators.required],
+      content: ['', Validators.required]
     })
-  
+
   }
 
-  onSubmit(){
-    this.journals.push(this.form.value);
-    console.log(this.journals)}}
-    console.log('hey Im submitting')
+  post() {
+    this.http.post(' https://seals-server-app.herokuapp.com/beef', this.form.value).subscribe((result: any) => {
+      console.log(result.data);
+      this.data = result.data;
+    }),
+      (err) => {
+        console.log(err)
+      };
+  }
 
 
+  onSubmit() {
+    this.data.push(this.form.value);
+    console.log(this.data)
+
+  }
+  getData() {
+    this.http.get(' https://seals-server-app.herokuapp.com/chicken').subscribe((result: any) => {
+      console.log(result.data);
+      this.data = result.data;
+    }),
+      (err) => {
+        console.log(err)
+      };
+  }
+  login() {
+    const payload = {
+      email: 'roberto@urbantxt.com',
+      password: 'kyle is cool'
+    }
+  }
+  viewBlog(id) {
+    console.log(id);
+    this.router.navigate(['/blog', id]);
+  }
+}

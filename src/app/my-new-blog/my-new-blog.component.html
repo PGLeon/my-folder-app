@@ -1,0 +1,14 @@
+<!-- <div id="padding">
+    <div *ngFor="let blog of data">
+      <div class="blog-link" (click)="viewBlog(blog._id)">
+        {{blog.content}}
+        {{blog.title}}
+      
+      </div>
+    </div>
+</div> -->
+ <div *ngIf="this.journal">
+    {{journal.title}}
+   
+    {{journal.content}}
+   </div> 

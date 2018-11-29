@@ -1,6 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { getBootstrapListener } from '../../../node_modules/@angular/router/src/router_module';
+import { By } from '@angular/platform-browser';
+import { getComponentViewByIndex } from '@angular/core/src/render3/util';
 
 
 @Component({
@@ -9,54 +12,64 @@ import { getBootstrapListener } from '../../../node_modules/@angular/router/src/
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  @ViewChild('carousel') carousel: any;
-  @ViewChild('carousel1') carousel1: any;
-  constructor(private router: Router) { }
+  public form: FormGroup;
+  public submitted = false;
+  public valid = true;
+  public data = [];
 
+  constructor(
+    public fb: FormBuilder,
+    public http: HttpClient,
+    public router: Router
+  ) { }
 
   ngOnInit() {
+    this.getData();
+
+    this.form = this.fb.group({
+      title: ['', Validators.required],
+      content: ['', Validators.required]
+    });
   }
-  public classroom = [
-    {
-      name: 'Nate',
-      age: 15,
-      status: true
- 
-    },
-    {
-      name: 'Kyle',
-      age: 16,
-      status: true
- 
-    },
-    {
-      name: 'Julian',
-      age: 16,
-      status: true
- 
-    },
-    {
-      name: 'Victor',
-      age: 16,
-      status: true
- 
-    },
-    {
-      name: 'David',
-      age: 15,
-      status: true
- 
-    },
-  ]
-  checkout() {
-    for(let item of this.classroom){
-      if(item.status === true){
-        item.status = false;
-      } else{
-        item.status = true;
-      }
-     
+
+  getData() {
+    this.http.get('http://localhost:3000/getData')
+      .subscribe((result: any) => {
+        console.log(result.data);
+        this.data = result.data;
+      }, (err) => {
+        console.log(err);
+      });
+  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      this.valid = true;
+      this.sendData();
+    } else {
+      this.valid = false;
+      console.log('erros');
     }
-    console.log(this.classroom)   
   }
- }
+
+  sendData() {
+    this.submitted = true;
+
+    this.http.post('http://localhost:3000/addNewBlog', this.form.value)
+      .subscribe((result) => {
+        this.submitted = false;
+        this.form.reset();
+        this.getData();
+        console.log(result);
+      }, (err) => {
+        this.submitted = false;
+        console.log(err);
+      });
+  }
+
+  viewBlog(id) {
+    console.log(id);
+    this.router.navigate(['/blogs', id]);
+  }
+}
+
